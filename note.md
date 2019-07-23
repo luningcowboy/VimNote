@@ -38,6 +38,7 @@ vim拥有很多选项可以设置以改变展现方式。
 |nmap|noremap/nnoremap|
 |imap|inoremap|
 |vmap|vnoremap|
+**注意:最好在任何时候都使用非递归映射** 
 
 ## Leaders
 `:let mapleader="-"`设置前缀
@@ -45,3 +46,57 @@ vim拥有很多选项可以设置以改变展现方式。
 ### Local Learder
 `:let maplocalleader="\\"` 只对那些只对某类文件(如Python文件，HTML文件)而设置对映射。
 **注意:**上面设置使用的是\\而不是\,因为在vim中\是转义字符。
+### 不退出vim的情况下编辑.vimrc并保存设置
+打开.vimrc
+`nnoremap <leader>ev :vsplit $MYVIMRC<cr>`
+保存.vimrc
+`nnoremap <leader>sv :source $MYVIMRC<cr>`
+
+## Abbreviations
+vim有个称为`abbreviations`的特性，与映射类似，但是它用于insert, replace,command模式。
+```
+:iabbrev adn and
+```
+上面的命令作用是在insert模式下，输入adn+空格后会自动替换为and.
+## 给单词添加双引号
+```
+nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
+```
+## 设置mapping不可用
+```
+"设置esc不可用
+inoremap <esc> <nop>
+```
+## 本地设置
+local-options
+setlocal
+map-local
+## 自动命令
+这个命令可以让执行`:edit file_name`命令的时候直接创建一个文件,正常情况下`:edit`命令打开一个文件
+如果文件不存在的话不会立刻创建，只有填入内容并保存后才会创建文件。
+```
+autocmd BufNewFile * :write
+```
+下面的命令跟上面的命令不一样，下面的命令只对txt文件有效，对其他文件无效。
+```
+autocmd BufNewFile *.txt :write
+```
+针对js文件自动缩进
+```
+autocmd BufNewFile *.js :normal gg=G
+```
+## 多个事件
+可以创建一个绑定多个事件的自动命令，这些事件使用逗号分开。
+```
+autocmd BufNewFile,BufRead *.html :normal gg=G 
+```
+## FileType事件
+```
+autocmd FileType javascript nnoremap <buffer> <localleader>c I//<esc>
+autocmd FileType python nnoremap <buffer> <localleader>c I#<esc>
+```
+help autocmd-events
+```
+autocmd FileType python :iabbrev <buffer> iff if:<left>
+autocmd FileType javascript :iabbrev <buffer> iff if ()<left>
+```
